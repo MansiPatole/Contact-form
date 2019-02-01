@@ -1,36 +1,35 @@
 <?php
-
 $servername = "localhost";
 $username = "root";
 $password = "";
-$conn = "contactdb";
 
-$conn = new mysqli("localhost",$username,$password,$conn);
+$con = mysqli_connect($servername,$username,$password);
 
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
+if(!$con) {
+  die("Connection failed:" . mysqli_connect_error());
 }
-echo "Connected successfully";
+ echo "Connection Successful!\n\n";
 
+ if(!mysqli_select_db($con,'contactdb')){
+   echo "Database not selected";
+ }
+  else {
+    echo "Database connect Successfully!";
+  }
 
-if(isset($_POST['submit'])){
 $name = $_POST['name'];
-$visitor_email = $_POST['email'];
+$email = $_POST['email'];
 $message = $_POST['message'];
 
-$sql = "INSERT INTO visitor-table (id, Name, Email Id,Message)
-VALUES ('1', '$name', '$visitor_email','$message')";
+$sql = "INSERT INTO client (Name,Email,Message) VALUES ('$name','$email','$message')";
 
-
-if ($conn->query($sql) === TRUE) {
-    echo "New record created successfully";
-} else {
-    echo "Error: " . $sql . "<br>" . $conn->error;
+if(mysqli_query($con,$sql)){
+  echo "Data is inserted Successfully!";
+  header("refresh:2, url = index.html");
 }
+else{
+  echo "Data not inserted!". $sql."<br>". mysqli_error($con);
 }
 
-$conn->close();
-
-
-
+mysqli_close($con);
 ?>
